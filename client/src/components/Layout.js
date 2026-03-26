@@ -6,36 +6,36 @@ import NotificationBell from './NotificationBell';
 const icons = { dashboard:'⬡', explore:'◎', exchanges:'⇄', projects:'◈', messages:'💬', learning:'🧠', progress:'📊', ai:'✦', profile:'◉', logout:'⏻' };
 
 const BOTTOM_TABS = [
-  { to: '/dashboard',  icon: '⬡', label: 'Home'    },
-  { to: '/explore',    icon: '◎', label: 'Explore' },
-  { to: '/messages',   icon: '💬', label: 'Messages'},
-  { to: '/ai',         icon: '✦', label: 'AI'      },
-  { to: '/profile',    icon: '◉', label: 'Profile' },
+  { to: '/app/dashboard',  icon: '⬡', label: 'Home'    },
+  { to: '/app/explore',    icon: '◎', label: 'Explore' },
+  { to: '/app/messages',   icon: '💬', label: 'Messages'},
+  { to: '/app/ai',         icon: '✦', label: 'AI'      },
+  { to: '/app/profile',    icon: '◉', label: 'Profile' },
 ];
 
 const SIDEBAR_GROUPS = [
   {
     label: 'CORE',
     items: [
-      { to: '/dashboard',  icon: '⬡',  label: 'Dashboard',  accent: true },
-      { to: '/ai-matches', icon: '🎯', label: 'AI Matches',  highlight: true, accent: true },
-      { to: '/explore',    icon: '◎',  label: 'Explore'    },
+      { to: '/app/dashboard',  icon: '⬡',  label: 'Dashboard',  accent: true },
+      { to: '/app/ai-matches', icon: '🎯', label: 'AI Matches',  highlight: true, accent: true },
+      { to: '/app/explore',    icon: '◎',  label: 'Explore'    },
     ]
   },
   {
     label: 'WORK',
     items: [
-      { to: '/exchanges', icon: '⇄',  label: 'Exchanges' },
-      { to: '/projects',  icon: '◈',  label: 'Projects'  },
-      { to: '/messages',  icon: '💬', label: 'Messages'  },
+      { to: '/app/exchanges', icon: '⇄',  label: 'Exchanges' },
+      { to: '/app/projects',  icon: '◈',  label: 'Projects'  },
+      { to: '/app/messages',  icon: '💬', label: 'Messages'  },
     ]
   },
   {
     label: 'AI / LEARNING',
     items: [
-      { to: '/learning-path', icon: '🧠', label: 'Learning Path' },
-      { to: '/progress',      icon: '📊', label: 'Progress'      },
-      { to: '/ai',            icon: '✦',  label: 'AI Assistant'  },
+      { to: '/app/learning-path', icon: '🧠', label: 'Learning Path' },
+      { to: '/app/progress',      icon: '📊', label: 'Progress'      },
+      { to: '/app/ai',            icon: '✦',  label: 'AI Assistant'  },
     ]
   },
 ];

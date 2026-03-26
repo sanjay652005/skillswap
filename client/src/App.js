@@ -16,6 +16,7 @@ import AIMatches from './pages/AIMatches';
 import Messages from './pages/Messages';
 import LearningPath from './pages/LearningPath';
 import ProgressTracker from './pages/ProgressTracker';
+import Landing from './pages/Landing';
 import './index.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -33,7 +34,13 @@ const ProtectedRoute = ({ children }) => {
 
 const PublicRoute = ({ children }) => {
   const { user } = useAuth();
-  return user ? <Navigate to="/dashboard" /> : children;
+  return user ? <Navigate to="/app/dashboard" /> : children;
+};
+
+const LandingRoute = () => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  return user ? <Navigate to="/app/dashboard" /> : <Landing />;
 };
 
 export default function App() {
@@ -41,9 +48,10 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<LandingRoute />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-          <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+          <Route path="/app" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
@@ -60,6 +68,18 @@ export default function App() {
             <Route path="learning-path" element={<LearningPath />} />
             <Route path="progress" element={<ProgressTracker />} />
           </Route>
+          {/* Redirect old paths */}
+          <Route path="/dashboard" element={<ProtectedRoute><Navigate to="/app/dashboard" /></ProtectedRoute>} />
+          <Route path="/explore" element={<ProtectedRoute><Navigate to="/app/explore" /></ProtectedRoute>} />
+          <Route path="/exchanges/*" element={<ProtectedRoute><Navigate to="/app/exchanges" /></ProtectedRoute>} />
+          <Route path="/messages/*" element={<ProtectedRoute><Navigate to="/app/messages" /></ProtectedRoute>} />
+          <Route path="/projects/*" element={<ProtectedRoute><Navigate to="/app/projects" /></ProtectedRoute>} />
+          <Route path="/ai" element={<ProtectedRoute><Navigate to="/app/ai" /></ProtectedRoute>} />
+          <Route path="/ai-matches" element={<ProtectedRoute><Navigate to="/app/ai-matches" /></ProtectedRoute>} />
+          <Route path="/learning-path" element={<ProtectedRoute><Navigate to="/app/learning-path" /></ProtectedRoute>} />
+          <Route path="/progress" element={<ProtectedRoute><Navigate to="/app/progress" /></ProtectedRoute>} />
+          <Route path="/profile/*" element={<ProtectedRoute><Navigate to="/app/profile" /></ProtectedRoute>} />
+          
         </Routes>
       </BrowserRouter>
     </AuthProvider>
