@@ -16,7 +16,7 @@ function WorkspaceStats({ workspaceId }) {
   const [stats, setStats] = useState(null);
   useEffect(() => {
     if (!workspaceId) return;
-    api.get(`/exchanges/workspace/${workspaceId}/stats`)
+    api.get(`/app/exchanges/workspace/${workspaceId}/stats`)
       .then(r => setStats(r.data)).catch(() => {});
   }, [workspaceId]);
 
@@ -131,7 +131,7 @@ export default function Exchanges() {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex items-start gap-3 flex-1">
                     {/* Avatar — clickable to profile */}
-                    <button onClick={() => navigate(`/profile/${partner?._id}`)}
+                    <button onClick={() => navigate(`/app/profile/${partner?._id}`)}
                       style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
                       <div className="avatar" title={`View ${partner?.name}'s profile`}>{initials(partner?.name)}</div>
                     </button>
@@ -139,7 +139,7 @@ export default function Exchanges() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         {/* Partner name — link to profile */}
-                        <Link to={`/profile/${partner?._id}`}
+                        <Link to={`/app/profile/${partner?._id}`}
                           style={{ color: '#e2e8f0', fontWeight: 600, textDecoration: 'none' }}
                           onMouseEnter={e => e.target.style.color = '#a78bfa'}
                           onMouseLeave={e => e.target.style.color = '#e2e8f0'}>
@@ -193,7 +193,7 @@ export default function Exchanges() {
                     {/* Active — open workspace + complete */}
                     {e.status === 'accepted' && wsId && (
                       <>
-                        <Link to={`/exchanges/workspace/${wsId}`} className="btn-primary text-sm py-1.5 px-4">
+                        <Link to={`/app/exchanges/workspace/${wsId}`} className="btn-primary text-sm py-1.5 px-4">
                           Open Workspace →
                         </Link>
                         <button className="btn-secondary text-sm py-1.5 px-4" onClick={() => complete(e._id)}>
@@ -204,7 +204,7 @@ export default function Exchanges() {
 
                     {/* Completed — leave review */}
                     {e.status === 'completed' && (
-                      <Link to={`/profile/${partner?._id}`} className="btn-secondary text-sm py-1.5 px-4">
+                      <Link to={`/app/profile/${partner?._id}`} className="btn-secondary text-sm py-1.5 px-4">
                         Leave Review
                       </Link>
                     )}

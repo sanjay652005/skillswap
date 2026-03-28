@@ -36,7 +36,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register(form);
-      navigate('/dashboard');
+      navigate('/app/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed');
     } finally {

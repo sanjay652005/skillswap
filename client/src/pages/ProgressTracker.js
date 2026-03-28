@@ -301,7 +301,7 @@ export default function ProgressTracker() {
           <p style={{ fontSize: '3rem', marginBottom: '12px' }}>📊</p>
           <h3 className="font-display font-semibold text-lg mb-2" style={{ color: '#e2e8f0' }}>No progress tracked yet</h3>
           <p style={{ color: '#6b7280', marginBottom: '20px', fontSize: '0.9rem' }}>Accept an exchange request to start tracking your learning progress</p>
-          <button className="btn-primary" onClick={() => navigate('/exchanges')}>Go to Exchanges →</button>
+          <button className="btn-primary" onClick={() => navigate('/app/exchanges')}>Go to Exchanges →</button>
         </div>
       )}
 

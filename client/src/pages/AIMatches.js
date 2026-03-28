@@ -77,8 +77,8 @@ const MatchCard = ({ match, onRequestExchange }) => {
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: '8px' }}>
-            <Link to={`/profile/${u._id}`} className="btn-secondary text-sm py-1.5 px-3">View Profile</Link>
-            <Link to={`/messages/${u._id}`} className="btn-secondary text-sm py-1.5 px-3">💬 Message</Link>
+            <Link to={`/app/profile/${u._id}`} className="btn-secondary text-sm py-1.5 px-3">View Profile</Link>
+            <Link to={`/app/messages/${u._id}`} className="btn-secondary text-sm py-1.5 px-3">💬 Message</Link>
             <button className="btn-primary text-sm py-1.5 px-3" onClick={() => onRequestExchange(u)}>⇄ Exchange</button>
           </div>
         </div>

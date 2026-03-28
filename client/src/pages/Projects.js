@@ -390,11 +390,11 @@ const ProjectCard = ({ project, currentUserId, onInvite, onViewTeam, onJoinReque
 
   const handleOpenWorkspace = async () => {
     const wid = project.workspace?._id || project.workspace;
-    if(wid){ navigate(`/projects/workspace/${wid}`); return; }
+    if(wid){ navigate(`/app/projects/workspace/${wid}`); return; }
     try{
       const res=await api.get(`/projects/${project._id}`);
       const w=res.data.workspace?._id||res.data.workspace;
-      if(w) navigate(`/projects/workspace/${w}`);
+      if(w) navigate(`/app/projects/workspace/${w}`);
     }catch{ alert('Could not load workspace'); }
   };
 

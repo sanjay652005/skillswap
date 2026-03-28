@@ -286,7 +286,7 @@ export default function LearningPath() {
               <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
                 <button onClick={savePath} className="btn-secondary text-sm py-1.5 px-4">💾 Save</button>
                 <button onClick={exportPDF} className="btn-secondary text-sm py-1.5 px-4">📄 Export PDF</button>
-                <button onClick={() => navigate('/exchanges')} className="btn-primary text-sm py-1.5 px-4">Find Partner ⇄</button>
+                <button onClick={() => navigate('/app/exchanges')} className="btn-primary text-sm py-1.5 px-4">Find Partner ⇄</button>
               </div>
             </div>
           </div>

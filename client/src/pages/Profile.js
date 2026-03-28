@@ -185,7 +185,7 @@ export default function Profile() {
                   </button>
                 ) : (
                   <>
-                    <button className="btn-secondary text-sm" onClick={() => navigate(`/messages/${profile._id}`)}>
+                    <button className="btn-secondary text-sm" onClick={() => navigate(`/app/messages/${profile._id}`)}>
                       💬 Message
                     </button>
                     <button className="btn-secondary text-sm" onClick={() => setShowReviewForm(!showReviewForm)}>

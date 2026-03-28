@@ -104,7 +104,7 @@ export default function Dashboard() {
       {(pendingIn.length > 0 || unreadMsgs > 0) && (
         <div style={{ display:'flex', flexDirection:'column', gap:'8px', marginBottom:'16px' }}>
           {pendingIn.length > 0 && (
-            <button onClick={() => navigate('/exchanges')}
+            <button onClick={() => navigate('/app/exchanges')}
               style={{ display:'flex', alignItems:'center', gap:'10px', padding:'12px 16px', borderRadius:'12px', background:'rgba(245,158,11,0.1)', border:'1px solid rgba(245,158,11,0.25)', cursor:'pointer', textAlign:'left', width:'100%' }}>
               <span style={{ fontSize:'1.2rem' }}>⚡</span>
               <span style={{ color:'#fbbf24', fontSize:'0.85rem', fontWeight:600 }}>
@@ -114,7 +114,7 @@ export default function Dashboard() {
             </button>
           )}
           {unreadMsgs > 0 && (
-            <button onClick={() => navigate('/messages')}
+            <button onClick={() => navigate('/app/messages')}
               style={{ display:'flex', alignItems:'center', gap:'10px', padding:'12px 16px', borderRadius:'12px', background:'rgba(109,40,217,0.1)', border:'1px solid rgba(109,40,217,0.25)', cursor:'pointer', textAlign:'left', width:'100%' }}>
               <span style={{ fontSize:'1.2rem' }}>💬</span>
               <span style={{ color:'#a78bfa', fontSize:'0.85rem', fontWeight:600 }}>
@@ -197,7 +197,7 @@ export default function Dashboard() {
                       )}
                     </div>
                     {wsId && (
-                      <Link to={`/exchanges/workspace/${wsId}`}
+                      <Link to={`/app/exchanges/workspace/${wsId}`}
                         style={{ background:'rgba(109,40,217,0.15)', border:'1px solid rgba(109,40,217,0.3)', borderRadius:'8px', padding:'5px 10px', color:'#a78bfa', fontSize:'0.75rem', textDecoration:'none', flexShrink:0, whiteSpace:'nowrap' }}>
                         Open →
                       </Link>
@@ -220,7 +220,7 @@ export default function Dashboard() {
           ) : (
             <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
               {conversations.map(c => (
-                <button key={c.partner?._id} onClick={() => navigate(`/messages/${c.partner?._id}`)}
+                <button key={c.partner?._id} onClick={() => navigate(`/app/messages/${c.partner?._id}`)}
                   style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', borderRadius:'10px', background:'#1a1a26', border:`1px solid ${c.unread?'rgba(109,40,217,0.3)':'#2a2a3d'}`, cursor:'pointer', textAlign:'left', width:'100%' }}>
                   <div style={{ position:'relative', flexShrink:0 }}>
                     <div className="avatar" style={{ width:32, height:32, fontSize:'0.68rem' }}>{initials(c.partner?.name)}</div>
@@ -274,7 +274,7 @@ export default function Dashboard() {
                     <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:'4px' }}>
                       <span style={{ color:'#6b7280', fontSize:'0.75rem' }}>👥 {memberCount} member{memberCount!==1?'s':''}{isOwner?' · owner':''}</span>
                       {wsId ? (
-                        <Link to={`/projects/workspace/${wsId}`}
+                        <Link to={`/app/projects/workspace/${wsId}`}
                           style={{ background:'rgba(109,40,217,0.15)', border:'1px solid rgba(109,40,217,0.3)', borderRadius:'8px', padding:'4px 10px', color:'#a78bfa', fontSize:'0.75rem', textDecoration:'none' }}>
                           Open →
                         </Link>
@@ -344,7 +344,7 @@ export default function Dashboard() {
                         {u.skillsOffered?.slice(0,2).map(s => <span key={s} className="skill-tag" style={{ fontSize:'0.65rem', padding:'1px 5px' }}>{s}</span>)}
                       </div>
                     </div>
-                    <Link to={`/profile/${u._id}`} style={{ color:'#a78bfa', fontSize:'0.72rem', textDecoration:'none', flexShrink:0 }}>View →</Link>
+                    <Link to={`/app/profile/${u._id}`} style={{ color:'#a78bfa', fontSize:'0.72rem', textDecoration:'none', flexShrink:0 }}>View →</Link>
                   </div>
                 ))}
               </div>

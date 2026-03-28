@@ -65,7 +65,7 @@ export default function ExchangeWorkspace() {
             </div>
           ))}
           <span className={`badge badge-${workspace.status}`}>{workspace.status}</span>
-          <button onClick={() => navigate('/progress')} className="btn-secondary text-xs py-1 px-3">📊 Track Progress</button>
+          <button onClick={() => navigate('/app/progress')} className="btn-secondary text-xs py-1 px-3">📊 Track Progress</button>
         </div>
       </div>
 

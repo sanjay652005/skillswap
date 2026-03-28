@@ -153,7 +153,7 @@ export default function Messages() {
       setConversations(prev => prev.map(c =>
         String(c.partner._id) === String(partnerUserId) ? { ...c, unread:0 } : c
       ));
-      navigate(`/messages/${partnerUserId}`, { replace:true });
+      navigate(`/app/messages/${partnerUserId}`, { replace:true });
       if (window.innerWidth < 768) setMobileView('chat');
     } catch(e) { console.error(e); }
   };
