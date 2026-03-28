@@ -11,8 +11,40 @@ const QUICK_PROMPTS = [
   'How to implement JWT authentication?'
 ];
 
+const renderMarkdown = (text) => {
+  return text
+    .replace(/### (.*?)(\n|$)/g, '<p style="color:#a78bfa;font-weight:700;font-size:0.9rem;margin:10px 0 4px">$1</p>')
+    .replace(/## (.*?)(\n|$)/g, '<p style="color:#e2e8f0;font-weight:700;font-size:0.95rem;margin:12px 0 4px">$1</p>')
+    .replace(/# (.*?)(\n|$)/g, '<p style="color:#e2e8f0;font-weight:800;font-size:1rem;margin:14px 0 6px">$1</p>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#e2e8f0;font-weight:600">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em style="color:#c4b5fd">$1</em>')
+    .replace(/^- (.*)/gm, '<div style="display:flex;gap:6px;margin:3px 0"><span style="color:#6d28d9;margin-top:2px">•</span><span>$1</span></div>')
+    .replace(/^\d+\. (.*)/gm, '<div style="display:flex;gap:6px;margin:3px 0"><span style="color:#6d28d9;font-weight:600;min-width:16px">›</span><span>$1</span></div>')
+    .replace(/\n/g, '<br/>');
+};
+
 const MessageBubble = ({ msg }) => {
   const isAI = msg.role === 'assistant';
+
+  const renderContent = () => {
+    const parts = msg.content.split('```');
+    return parts.map((part, i) => {
+      if (i % 2 === 1) {
+        const [lang, ...lines] = part.split('\n');
+        return (
+          <pre key={i} className="my-3 p-3 rounded-lg overflow-x-auto text-xs"
+            style={{ background: '#0a0a0f', border: '1px solid #2a2a3d', fontFamily: 'JetBrains Mono, monospace', color: '#a78bfa' }}>
+            <code>{lines.join('\n')}</code>
+          </pre>
+        );
+      }
+      if (isAI) {
+        return <div key={i} dangerouslySetInnerHTML={{ __html: renderMarkdown(part) }} />;
+      }
+      return <span key={i} className="whitespace-pre-wrap">{part}</span>;
+    });
+  };
+
   return (
     <div className={`flex gap-3 ${isAI ? '' : 'flex-row-reverse'} fade-in`}>
       <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold`}
@@ -20,24 +52,13 @@ const MessageBubble = ({ msg }) => {
         {isAI ? '✦' : 'U'}
       </div>
       <div className={`flex-1 max-w-2xl`}>
-        <div className={`p-4 rounded-xl text-sm leading-relaxed ${isAI ? '' : ''}`}
+        <div className={`p-4 rounded-xl text-sm leading-relaxed`}
           style={{
             background: isAI ? '#1a1a26' : 'rgba(109,40,217,0.15)',
             border: `1px solid ${isAI ? '#2a2a3d' : 'rgba(109,40,217,0.3)'}`,
-            color: '#e2e8f0'
+            color: '#94a3b8'
           }}>
-          {msg.content.split('```').map((part, i) => {
-            if (i % 2 === 1) {
-              const [lang, ...lines] = part.split('\n');
-              return (
-                <pre key={i} className="my-3 p-3 rounded-lg overflow-x-auto text-xs"
-                  style={{ background: '#0a0a0f', border: '1px solid #2a2a3d', fontFamily: 'JetBrains Mono, monospace', color: '#a78bfa' }}>
-                  <code>{lines.join('\n')}</code>
-                </pre>
-              );
-            }
-            return <span key={i} className="whitespace-pre-wrap">{part}</span>;
-          })}
+          {renderContent()}
         </div>
         <p className="text-xs mt-1 px-1" style={{ color: '#4b5563' }}>
           {isAI ? 'AI Assistant' : 'You'} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

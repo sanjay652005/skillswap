@@ -108,3 +108,21 @@ exports.checkUsername = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// ── Public stats (no auth) ────────────────────────────────────────
+exports.getPublicStats = async (req, res) => {
+  try {
+    const ExchangeRequest = require('../models/ExchangeRequest');
+    const Project = require('../models/Project');
+
+    const [users, exchanges, projects] = await Promise.all([
+      User.countDocuments(),
+      ExchangeRequest.countDocuments({ status: 'completed' }),
+      Project.countDocuments(),
+    ]);
+
+    res.json({ users, exchanges, projects, skills: users * 3 });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

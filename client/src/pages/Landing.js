@@ -16,7 +16,7 @@ const STEPS = [
   { num: '03', title: 'Exchange & Grow', desc: 'Collaborate in real-time workspaces, track progress and build your reputation.' },
 ];
 
-const STATS = [
+const STATS_DEFAULT = [
   { value: '10+', label: 'AI-Powered Features' },
   { value: '100%', label: 'Free to Use' },
   { value: '3s', label: 'To Find a Match' },
@@ -62,6 +62,7 @@ const MockMatchCard = ({ name, score, skills, color, delay }) => (
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSkill, setActiveSkill] = useState(0);
+  const [stats, setStats] = useState(STATS_DEFAULT);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -72,6 +73,24 @@ export default function Landing() {
   useEffect(() => {
     const interval = setInterval(() => setActiveSkill(prev => (prev + 1) % SKILLS.length), 2000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Fetch real stats
+  useEffect(() => {
+    const API = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    fetch(`${API}/users/stats`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.users !== undefined) {
+          setStats([
+            { value: data.users + '+', label: 'Developers Joined' },
+            { value: data.exchanges + '+', label: 'Skills Exchanged' },
+            { value: data.projects + '+', label: 'Projects Created' },
+            { value: '100%', label: 'Free to Use' },
+          ]);
+        }
+      })
+      .catch(() => {}); // keep defaults if API fails
   }, []);
 
   return (
@@ -201,7 +220,7 @@ export default function Landing() {
       {/* ── Stats ── */}
       <section style={{ padding: '60px 24px', borderTop: '1px solid #1a1a26', borderBottom: '1px solid #1a1a26', background: 'rgba(109,40,217,0.03)' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '32px', textAlign: 'center' }}>
-          {STATS.map(s => (
+          {stats.map(s => (
             <div key={s.label}>
               <p style={{ fontFamily: 'Syne, sans-serif', fontSize: '2.8rem', fontWeight: 800, background: 'linear-gradient(135deg,#c4b5fd,#7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '4px' }}>{s.value}</p>
               <p style={{ color: '#4b5563', fontSize: '0.85rem' }}>{s.label}</p>
