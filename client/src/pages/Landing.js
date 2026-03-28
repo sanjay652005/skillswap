@@ -98,16 +98,27 @@ export default function Landing() {
       <style>{`
         @keyframes floatCard { from { transform: translateY(0px); } to { transform: translateY(-10px); } }
         @keyframes pulse-glow { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .feature-card:hover { transform: translateY(-4px); }
         .feature-card { transition: all 0.25s; }
+        @media (max-width: 768px) {
+          .floating-pill { display: none !important; }
+          .hero-section { padding: 100px 16px 60px !important; min-height: auto !important; }
+          .mock-preview { display: none !important; }
+          .nav-bar { padding: 12px 16px !important; }
+          .cta-buttons { flex-direction: column !important; align-items: center !important; }
+          .cta-buttons a { width: 100% !important; text-align: center !important; max-width: 300px; }
+          .footer-inner { flex-direction: column !important; text-align: center !important; gap: 16px !important; }
+        }
+        @media (max-width: 480px) {
+          .stats-section { grid-template-columns: repeat(2,1fr) !important; }
+        }
       `}</style>
 
       {/* ── Navbar ── */}
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        padding: '14px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         background: scrolled ? 'rgba(10,10,15,0.9)' : 'transparent',
         borderBottom: scrolled ? '1px solid #1a1a26' : 'none',
         backdropFilter: scrolled ? 'blur(16px)' : 'none',
@@ -128,18 +139,18 @@ export default function Landing() {
       </nav>
 
       {/* ── Hero ── */}
-      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(100px,15vw,140px) 16px 60px', position: 'relative', overflow: 'hidden' }}>
         {/* Background orbs */}
         <div style={{ position: 'absolute', top: '15%', left: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(109,40,217,0.12) 0%, transparent 70%)', animation: 'pulse-glow 4s ease-in-out infinite', pointerEvents: 'none' }}/>
         <div style={{ position: 'absolute', bottom: '20%', right: '10%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', animation: 'pulse-glow 5s ease-in-out 1s infinite', pointerEvents: 'none' }}/>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '700px', height: '500px', background: 'radial-gradient(ellipse, rgba(109,40,217,0.06) 0%, transparent 60%)', pointerEvents: 'none' }}/>
 
-        {/* Floating pills */}
-        <FloatingPill skill="React" style={{ top: '22%', left: '8%', animation: 'floatCard 3s ease-in-out infinite alternate' }}/>
-        <FloatingPill skill="Python" style={{ top: '35%', right: '6%', animation: 'floatCard 4s ease-in-out 1s infinite alternate' }}/>
-        <FloatingPill skill="Node.js" style={{ bottom: '30%', left: '5%', animation: 'floatCard 3.5s ease-in-out 0.5s infinite alternate' }}/>
-        <FloatingPill skill="UI/UX" style={{ bottom: '25%', right: '8%', animation: 'floatCard 4.5s ease-in-out 1.5s infinite alternate' }}/>
-        <FloatingPill skill="ML / AI" style={{ top: '18%', right: '20%', animation: 'floatCard 3s ease-in-out 2s infinite alternate' }}/>
+        {/* Floating pills - hidden on mobile */}
+        <div className="floating-pill"><FloatingPill skill="React" style={{ top: '22%', left: '8%', animation: 'floatCard 3s ease-in-out infinite alternate' }}/></div>
+        <div className="floating-pill"><FloatingPill skill="Python" style={{ top: '35%', right: '6%', animation: 'floatCard 4s ease-in-out 1s infinite alternate' }}/></div>
+        <div className="floating-pill"><FloatingPill skill="Node.js" style={{ bottom: '30%', left: '5%', animation: 'floatCard 3.5s ease-in-out 0.5s infinite alternate' }}/></div>
+        <div className="floating-pill"><FloatingPill skill="UI/UX" style={{ bottom: '25%', right: '8%', animation: 'floatCard 4.5s ease-in-out 1.5s infinite alternate' }}/></div>
+        <div className="floating-pill"><FloatingPill skill="ML / AI" style={{ top: '18%', right: '20%', animation: 'floatCard 3s ease-in-out 2s infinite alternate' }}/></div>
 
         <div style={{ maxWidth: '800px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
           {/* Badge */}
@@ -167,17 +178,17 @@ export default function Landing() {
           </p>
 
           {/* CTAs */}
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
+          <div className="cta-buttons" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
             <Link to="/register" style={{
               background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)', color: 'white',
-              textDecoration: 'none', padding: '15px 36px', borderRadius: '12px',
+              textDecoration: 'none', padding: '13px 24px', borderRadius: '12px',
               fontWeight: 700, fontSize: '1.05rem', boxShadow: '0 0 40px rgba(109,40,217,0.45)',
               transition: 'all 0.2s', display: 'inline-block'
             }}>
               Start Swapping Free →
             </Link>
             <Link to="/login" style={{
-              color: '#94a3b8', textDecoration: 'none', padding: '15px 36px',
+              color: '#94a3b8', textDecoration: 'none', padding: '13px 24px',
               borderRadius: '12px', fontWeight: 600, fontSize: '1.05rem',
               border: '1px solid #2a2a3d', background: 'rgba(255,255,255,0.02)',
               transition: 'all 0.2s', display: 'inline-block'
@@ -190,7 +201,7 @@ export default function Landing() {
       </section>
 
       {/* ── Mock UI Preview ── */}
-      <section style={{ padding: '0 24px 80px', position: 'relative' }}>
+      <section className="mock-preview" style={{ padding: '0 24px 80px', position: 'relative' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative' }}>
           <p style={{ textAlign: 'center', color: '#4b5563', fontSize: '0.78rem', marginBottom: '24px', letterSpacing: '0.1em', fontWeight: 600 }}>AI MATCH ENGINE IN ACTION</p>
           <div style={{
@@ -293,7 +304,7 @@ export default function Landing() {
           </p>
           <Link to="/register" style={{
             display: 'inline-block', background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)',
-            color: 'white', textDecoration: 'none', padding: '16px 48px',
+            color: 'white', textDecoration: 'none', padding: '14px 32px',
             borderRadius: '14px', fontWeight: 700, fontSize: '1.1rem',
             boxShadow: '0 0 50px rgba(109,40,217,0.4), 0 20px 40px rgba(0,0,0,0.3)',
             transition: 'all 0.2s'
