@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -14,7 +15,8 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await login(form.email, form.password);
+      const res = await api.post('/auth/login', form);
+      login(res.data.token, res.data.user);
       navigate('/app/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
@@ -24,54 +26,140 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: '#0a0a0f' }}>
-      <div className="animated-bg" />
-      <div className="w-full max-w-md fade-in">
+    <div style={{
+      minHeight: '100vh',
+      background: '#0a0a0f',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '24px 16px',
+    }}>
+      {/* Background orbs */}
+      <div style={{
+        position: 'fixed', top: '20%', left: '10%',
+        width: 400, height: 400,
+        background: 'radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)',
+        borderRadius: '50%', pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'fixed', bottom: '20%', right: '10%',
+        width: 300, height: 300,
+        background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%)',
+        borderRadius: '50%', pointerEvents: 'none',
+      }} />
+
+      <div style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 1 }}>
         {/* Logo */}
-        <div className="text-center mb-10">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: 'linear-gradient(135deg, #6d28d9, #8b5cf6)', boxShadow: '0 0 40px rgba(109,40,217,0.4)' }}>
-            <span className="text-white font-bold text-xl">SE</span>
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 52, height: 52, borderRadius: 14,
+            background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+            marginBottom: 16,
+          }}>
+            <span style={{ fontSize: 24 }}>⇄</span>
           </div>
-          <h1 className="font-display text-3xl font-bold gradient-text">SkillSwap</h1>
-          <p className="text-sm mt-2" style={{ color: '#6b7280' }}>Developer Collaboration Platform</p>
+          <h1 style={{
+            fontSize: 28, fontWeight: 700, color: '#ffffff',
+            margin: '0 0 6px', fontFamily: 'Syne, sans-serif',
+          }}>Welcome back</h1>
+          <p style={{ color: '#a0a0b0', fontSize: 15, margin: 0 }}>
+            Sign in to SkillSwap
+          </p>
         </div>
 
-        <div className="glass p-8">
-          <h2 className="font-display text-xl font-semibold mb-6" style={{ color: '#e2e8f0' }}>Welcome back</h2>
-
+        {/* Card */}
+        <div style={{
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: 20,
+          padding: '32px 28px',
+          backdropFilter: 'blur(10px)',
+        }}>
           {error && (
-            <div className="mb-4 p-3 rounded-lg text-sm" style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}>
+            <div style={{
+              background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)',
+              borderRadius: 10, padding: '12px 14px', marginBottom: 20,
+              color: '#f87171', fontSize: 14,
+            }}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm mb-2" style={{ color: '#94a3b8' }}>Email</label>
-              <input className="input" type="email" placeholder="you@example.com" value={form.email}
-                onChange={e => setForm({ ...form, email: e.target.value })} required />
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ display: 'block', color: '#a0a0b0', fontSize: 13, marginBottom: 7, fontWeight: 500 }}>
+                Email
+              </label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })}
+                placeholder="you@example.com"
+                required
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 10, padding: '11px 14px',
+                  color: '#ffffff', fontSize: 15,
+                  outline: 'none', transition: 'border-color 0.2s',
+                }}
+                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+              />
             </div>
-            <div>
-              <label className="block text-sm mb-2" style={{ color: '#94a3b8' }}>Password</label>
-              <input className="input" type="password" placeholder="••••••••" value={form.password}
-                onChange={e => setForm({ ...form, password: e.target.value })} required />
+
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', color: '#a0a0b0', fontSize: 13, marginBottom: 7, fontWeight: 500 }}>
+                Password
+              </label>
+              <input
+                type="password"
+                value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                placeholder="••••••••"
+                required
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 10, padding: '11px 14px',
+                  color: '#ffffff', fontSize: 15,
+                  outline: 'none', transition: 'border-color 0.2s',
+                }}
+                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+              />
             </div>
-            <button className="btn-primary w-full mt-2" type="submit" disabled={loading}>
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: '100%', padding: '12px',
+                background: loading ? 'rgba(139,92,246,0.5)' : 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                border: 'none', borderRadius: 10,
+                color: '#ffffff', fontSize: 16, fontWeight: 600,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'opacity 0.2s',
+              }}
+            >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p className="text-center text-sm mt-6" style={{ color: '#6b7280' }}>
+          <p style={{ textAlign: 'center', marginTop: 20, color: '#a0a0b0', fontSize: 14 }}>
             Don't have an account?{' '}
-            <Link to="/register" style={{ color: '#a78bfa' }} className="hover:underline">Create one</Link>
+            <Link to="/register" style={{ color: '#a78bfa', fontWeight: 500, textDecoration: 'none' }}>
+              Create one
+            </Link>
           </p>
-
-          {/* Demo hint */}
-          <div className="mt-4 p-3 rounded-lg text-xs" style={{ background: 'rgba(109,40,217,0.1)', border: '1px solid rgba(109,40,217,0.2)', color: '#a78bfa' }}>
-            💡 <strong>Demo:</strong> Register a new account to get started immediately.
-          </div>
         </div>
+
+        <p style={{ textAlign: 'center', marginTop: 20, color: '#555', fontSize: 13 }}>
+          <Link to="/" style={{ color: '#666', textDecoration: 'none' }}>← Back to home</Link>
+        </p>
       </div>
     </div>
   );
