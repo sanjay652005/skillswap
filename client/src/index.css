@@ -295,8 +295,8 @@ body {
 }
 
 /* Prevent horizontal scroll everywhere */
-* {
-  max-width: 100%;
+*:not(div[style*="maxWidth"]):not(div[style*="max-width"]) {
+  box-sizing: border-box;
 }
 
 img, video, iframe {
@@ -482,7 +482,6 @@ html, body, #root {
 
 /* All containers respect viewport */
 div, section, main, aside, nav {
-  max-width: 100% !important;
   box-sizing: border-box !important;
 }
 
@@ -649,4 +648,18 @@ div, section, main, aside, nav {
   .btn-primary, .btn-secondary { font-size: 0.75rem !important; padding: 0.45rem 0.7rem !important; }
   h1 { font-size: 1.3rem !important; }
   h2 { font-size: 1rem !important; }
+}
+
+/* ── Global autofill fix ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #1a1a26 inset !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+  caret-color: #e2e8f0 !important;
+  border-color: #2a2a3d !important;
+  transition: background-color 9999s ease-in-out 0s;
 }

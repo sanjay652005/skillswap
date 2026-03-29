@@ -1,267 +1,271 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
-const STEPS = ['Account', 'Profile', 'Skills'];
+const SKILL_SUGGESTIONS = ['React', 'Node.js', 'Python', 'TypeScript', 'Go', 'Rust', 'Docker', 'AWS', 'GraphQL', 'MongoDB', 'PostgreSQL', 'Machine Learning', 'DevOps', 'Vue.js', 'Flutter'];
 
 export default function Register() {
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState({
-    name: '', email: '', password: '',
-    bio: '', availability: 'weekends',
-    skillsOffered: '', skillsWanted: '',
-    githubLink: '', linkedinLink: '',
+  const [step, setStep]   = useState(1);
+  const [form, setForm]   = useState({
+    name: '', email: '', password: '', bio: '',
+    skillsOffered: [], skillsWanted: [],
+    availability: 'flexible', githubLink: '', linkedinLink: '', leetcodeLink: ''
   });
-  const [error, setError] = useState('');
+  const [skillInput, setSkillInput] = useState({ offered: '', wanted: '' });
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { register } = useAuth();
+  const navigate     = useNavigate();
 
-  const update = (field, val) => setForm(f => ({ ...f, [field]: val }));
+  const addSkill = (type) => {
+    const val = skillInput[type].trim();
+    if (!val) return;
+    const field = type === 'offered' ? 'skillsOffered' : 'skillsWanted';
+    if (!form[field].includes(val)) setForm({ ...form, [field]: [...form[field], val] });
+    setSkillInput({ ...skillInput, [type]: '' });
+  };
 
-  const handleSubmit = async () => {
-    setError('');
-    setLoading(true);
+  const removeSkill = (type, skill) => {
+    const field = type === 'offered' ? 'skillsOffered' : 'skillsWanted';
+    setForm({ ...form, [field]: form[field].filter(s => s !== skill) });
+  };
+
+  const handleSubmit = async (e) => {
+    e?.preventDefault();
+    setError(''); setLoading(true);
     try {
-      const payload = {
-        ...form,
-        skillsOffered: form.skillsOffered.split(',').map(s => s.trim()).filter(Boolean),
-        skillsWanted: form.skillsWanted.split(',').map(s => s.trim()).filter(Boolean),
-      };
-      const res = await api.post('/auth/register', payload);
-      login(res.data.token, res.data.user);
+      await register(form);
       navigate('/app/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
-  const inputStyle = {
-    width: '100%', boxSizing: 'border-box',
-    background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.12)',
-    borderRadius: 10, padding: '11px 14px',
-    color: '#ffffff', fontSize: 15,
-    outline: 'none', marginBottom: 16,
-    transition: 'border-color 0.2s',
-  };
-
-  const labelStyle = {
-    display: 'block', color: '#a0a0b0',
-    fontSize: 13, marginBottom: 6, fontWeight: 500,
-  };
-
-  const textareaStyle = {
-    ...inputStyle,
-    resize: 'vertical', minHeight: 80,
-  };
+  const STEP_LABELS = ['Account', 'Skills', 'Links'];
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#0a0a0f',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '24px 16px',
-    }}>
-      {/* Background orbs */}
-      <div style={{
-        position: 'fixed', top: '15%', right: '10%',
-        width: 350, height: 350,
-        background: 'radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 70%)',
-        borderRadius: '50%', pointerEvents: 'none',
-      }} />
+    <div style={{ minHeight: '100vh', display: 'flex', background: '#0a0a0f', fontFamily: 'DM Sans, sans-serif' }}>
+      <style>{`
+        .reg-input {
+          width: 100%; padding: 11px 14px; border-radius: 10px;
+          background: #1a1a26 !important; border: 1px solid #2a2a3d;
+          color: #e2e8f0 !important; font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+          outline: none; transition: border-color 0.2s; box-sizing: border-box;
+        }
+        .reg-input:focus { border-color: #6d28d9; }
+        .reg-input:-webkit-autofill,
+        .reg-input:-webkit-autofill:hover,
+        .reg-input:-webkit-autofill:focus {
+          -webkit-box-shadow: 0 0 0 1000px #1a1a26 inset !important;
+          -webkit-text-fill-color: #e2e8f0 !important;
+        }
+        @media (max-width: 768px) {
+          .left-panel { display: none !important; }
+          .right-panel { max-width: 100% !important; }
+        }
+      `}</style>
 
-      <div style={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
+      {/* ── Left Panel ── */}
+      <div className="left-panel" style={{
+        flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: '60px 48px', position: 'relative', overflow: 'hidden',
+        borderRight: '1px solid #1a1a26'
+      }}>
+        <div style={{ position: 'absolute', top: '30%', left: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(109,40,217,0.12) 0%, transparent 70%)', pointerEvents: 'none' }}/>
+
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 48, height: 48, borderRadius: 13,
-            background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-            marginBottom: 14,
-          }}>
-            <span style={{ fontSize: 22 }}>⇄</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '60px' }}>
+          <div style={{ width: 36, height: 36, borderRadius: '9px', background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(109,40,217,0.4)' }}>
+            <span style={{ color: 'white', fontWeight: 800, fontSize: '0.9rem' }}>S</span>
           </div>
-          <h1 style={{
-            fontSize: 26, fontWeight: 700, color: '#ffffff',
-            margin: '0 0 5px', fontFamily: 'Syne, sans-serif',
-          }}>Join SkillSwap</h1>
-          <p style={{ color: '#a0a0b0', fontSize: 14, margin: 0 }}>
-            Learn any skill without paying money
-          </p>
+          <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.2rem', background: 'linear-gradient(135deg,#a78bfa,#7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>SkillSwap</span>
         </div>
 
-        {/* Step indicators */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 24 }}>
-          {STEPS.map((s, i) => (
-            <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                opacity: i <= step ? 1 : 0.4,
-              }}>
-                <div style={{
-                  width: 24, height: 24, borderRadius: '50%',
-                  background: i < step ? '#7c3aed' : i === step ? 'rgba(139,92,246,0.3)' : 'rgba(255,255,255,0.1)',
-                  border: i === step ? '2px solid #7c3aed' : '2px solid transparent',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 12, color: '#fff', fontWeight: 600,
-                }}>
-                  {i < step ? '✓' : i + 1}
-                </div>
-                <span style={{ fontSize: 13, color: i === step ? '#a78bfa' : '#666' }}>{s}</span>
-              </div>
-              {i < STEPS.length - 1 && (
-                <div style={{ width: 24, height: 1, background: 'rgba(255,255,255,0.1)' }} />
-              )}
+        <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: 'clamp(2rem,4vw,3rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: '20px', color: '#e2e8f0' }}>
+          Your skills are<br/>
+          <span style={{ background: 'linear-gradient(135deg,#a78bfa,#6d28d9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>worth something.</span>
+        </h1>
+        <p style={{ color: '#4b5563', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '40px', maxWidth: '380px' }}>
+          Join SkillSwap and start exchanging skills with real developers. No money needed — just knowledge.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '40px' }}>
+          {[
+            'Free forever — no subscriptions',
+            'AI finds your best match automatically',
+            'Start your first exchange in minutes',
+          ].map(b => (
+            <div key={b} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <span style={{ color: '#6d28d9', fontSize: '1rem', marginTop: '1px', flexShrink: 0 }}>✓</span>
+              <span style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.5 }}>{b}</span>
             </div>
           ))}
         </div>
 
-        {/* Card */}
-        <div style={{
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 20,
-          padding: '28px 28px',
-          backdropFilter: 'blur(10px)',
-        }}>
-          {error && (
-            <div style={{
-              background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)',
-              borderRadius: 10, padding: '11px 14px', marginBottom: 18,
-              color: '#f87171', fontSize: 14,
-            }}>
-              {error}
-            </div>
-          )}
+        <div style={{ padding: '14px 16px', borderRadius: '10px', background: 'rgba(109,40,217,0.08)', border: '1px solid rgba(109,40,217,0.2)', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '1.1rem' }}>⚡</span>
+          <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
+            Joined by <span style={{ color: '#a78bfa', fontWeight: 600 }}>500+</span> developers already learning for free
+          </span>
+        </div>
+      </div>
 
-          {/* Step 0 — Account */}
-          {step === 0 && (
-            <div>
-              <label style={labelStyle}>Full Name</label>
-              <input style={inputStyle} value={form.name} onChange={e => update('name', e.target.value)}
-                placeholder="Sanjay Kumar"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
+      {/* ── Right Panel (Form) ── */}
+      <div className="right-panel" style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '40px', background: '#0d0d14', overflowY: 'auto' }}>
 
-              <label style={labelStyle}>Email</label>
-              <input style={inputStyle} type="email" value={form.email} onChange={e => update('email', e.target.value)}
-                placeholder="you@example.com"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={labelStyle}>Password</label>
-              <input style={{ ...inputStyle, marginBottom: 0 }} type="password" value={form.password} onChange={e => update('password', e.target.value)}
-                placeholder="Min. 6 characters"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-            </div>
-          )}
-
-          {/* Step 1 — Profile */}
-          {step === 1 && (
-            <div>
-              <label style={labelStyle}>Bio</label>
-              <textarea style={textareaStyle} value={form.bio} onChange={e => update('bio', e.target.value)}
-                placeholder="Tell others about yourself..."
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={labelStyle}>Availability</label>
-              <select style={{ ...inputStyle, cursor: 'pointer' }} value={form.availability}
-                onChange={e => update('availability', e.target.value)}>
-                <option value="weekdays">Weekdays</option>
-                <option value="weekends">Weekends</option>
-                <option value="evenings">Evenings</option>
-                <option value="flexible">Flexible</option>
-              </select>
-
-              <label style={labelStyle}>GitHub (optional)</label>
-              <input style={inputStyle} value={form.githubLink} onChange={e => update('githubLink', e.target.value)}
-                placeholder="https://github.com/username"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={{ ...labelStyle, marginBottom: 6 }}>LinkedIn (optional)</label>
-              <input style={{ ...inputStyle, marginBottom: 0 }} value={form.linkedinLink} onChange={e => update('linkedinLink', e.target.value)}
-                placeholder="https://linkedin.com/in/username"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-            </div>
-          )}
-
-          {/* Step 2 — Skills */}
-          {step === 2 && (
-            <div>
-              <label style={labelStyle}>Skills I Can Teach</label>
-              <input style={inputStyle} value={form.skillsOffered} onChange={e => update('skillsOffered', e.target.value)}
-                placeholder="React, Node.js, Python (comma separated)"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={labelStyle}>Skills I Want to Learn</label>
-              <input style={{ ...inputStyle, marginBottom: 0 }} value={form.skillsWanted} onChange={e => update('skillsWanted', e.target.value)}
-                placeholder="UI/UX, Machine Learning, Docker"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <p style={{ color: '#666', fontSize: 13, marginTop: 12 }}>
-                Separate multiple skills with commas
-              </p>
-            </div>
-          )}
-
-          {/* Navigation */}
-          <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
-            {step > 0 && (
-              <button onClick={() => setStep(s => s - 1)} style={{
-                flex: 1, padding: '11px',
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: 10, color: '#a0a0b0',
-                fontSize: 15, cursor: 'pointer',
-              }}>
-                Back
-              </button>
-            )}
-            {step < 2 ? (
-              <button onClick={() => setStep(s => s + 1)} style={{
-                flex: 1, padding: '11px',
-                background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                border: 'none', borderRadius: 10,
-                color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer',
-              }}>
-                Continue →
-              </button>
-            ) : (
-              <button onClick={handleSubmit} disabled={loading} style={{
-                flex: 1, padding: '11px',
-                background: loading ? 'rgba(139,92,246,0.5)' : 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                border: 'none', borderRadius: 10,
-                color: '#fff', fontSize: 15, fontWeight: 600,
-                cursor: loading ? 'not-allowed' : 'pointer',
-              }}>
-                {loading ? 'Creating account...' : 'Start Learning Free'}
-              </button>
-            )}
-          </div>
+        {/* Step indicator */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '32px' }}>
+          {STEP_LABELS.map((label, i) => {
+            const s = i + 1;
+            const isActive = s === step;
+            const isDone = s < step;
+            return (
+              <React.Fragment key={s}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 700, background: isActive ? 'linear-gradient(135deg,#6d28d9,#8b5cf6)' : isDone ? '#6d28d9' : '#1a1a26', color: isActive || isDone ? 'white' : '#4b5563', border: isActive || isDone ? 'none' : '1px solid #2a2a3d' }}>
+                    {isDone ? '✓' : s}
+                  </div>
+                  <span style={{ fontSize: '0.78rem', color: isActive ? '#e2e8f0' : '#4b5563', fontWeight: isActive ? 600 : 400 }}>{label}</span>
+                </div>
+                {i < 2 && <div style={{ flex: 1, height: '1px', background: s < step ? '#6d28d9' : '#2a2a3d', maxWidth: '40px' }}/>}
+              </React.Fragment>
+            );
+          })}
         </div>
 
-        <p style={{ textAlign: 'center', marginTop: 18, color: '#555', fontSize: 14 }}>
-          Already have an account?{' '}
-          <Link to="/login" style={{ color: '#a78bfa', fontWeight: 500, textDecoration: 'none' }}>
-            Sign in
-          </Link>
-        </p>
+        {error && (
+          <div style={{ marginBottom: '16px', padding: '12px', borderRadius: '8px', background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.25)', fontSize: '0.83rem' }}>
+            {error}
+          </div>
+        )}
 
-        <p style={{ textAlign: 'center', marginTop: 10, fontSize: 13 }}>
-          <Link to="/" style={{ color: '#555', textDecoration: 'none' }}>← Back to home</Link>
+        {/* ── Step 1 ── */}
+        {step === 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '1.2rem', color: '#e2e8f0', marginBottom: '4px' }}>Basic Info</h3>
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '6px' }}>FULL NAME *</label>
+              <input className="reg-input" placeholder="Jane Developer" value={form.name}
+                onChange={e => setForm({ ...form, name: e.target.value })} />
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '6px' }}>EMAIL *</label>
+              <input className="reg-input" type="email" placeholder="jane@example.com" value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })} />
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '6px' }}>PASSWORD *</label>
+              <input className="reg-input" type="password" placeholder="Min 6 characters" value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })} />
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '6px' }}>BIO <span style={{ color: '#3d3d52', fontWeight: 400 }}>(optional)</span></label>
+              <textarea className="reg-input" rows={3} placeholder="Tell other developers about yourself..."
+                value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })}
+                style={{ resize: 'vertical' }} />
+            </div>
+            <button onClick={() => form.name && form.email && form.password ? setStep(2) : setError('Please fill all required fields')}
+              style={{ width: '100%', padding: '13px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)', color: 'white', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 0 20px rgba(109,40,217,0.3)', fontFamily: 'DM Sans, sans-serif', marginTop: '4px' }}>
+              Continue →
+            </button>
+          </div>
+        )}
+
+        {/* ── Step 2 ── */}
+        {step === 2 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '1.2rem', color: '#e2e8f0', marginBottom: '4px' }}>Your Skills</h3>
+
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '8px' }}>SKILLS YOU OFFER</label>
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                <input className="reg-input" style={{ flex: 1 }} placeholder="e.g. React, Python..."
+                  value={skillInput.offered} onChange={e => setSkillInput({ ...skillInput, offered: e.target.value })}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill('offered'))} />
+                <button onClick={() => addSkill('offered')} style={{ padding: '10px 16px', borderRadius: '8px', border: 'none', background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)', color: 'white', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '0.85rem' }}>Add</button>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
+                {form.skillsOffered.map(s => (
+                  <span key={s} onClick={() => removeSkill('offered', s)} style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '0.75rem', background: 'rgba(109,40,217,0.15)', color: '#a78bfa', border: '1px solid rgba(109,40,217,0.3)', cursor: 'pointer' }}>{s} ×</span>
+                ))}
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                {SKILL_SUGGESTIONS.filter(s => !form.skillsOffered.includes(s)).slice(0, 8).map(s => (
+                  <button key={s} onClick={() => setForm({ ...form, skillsOffered: [...form.skillsOffered, s] })}
+                    style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '0.72rem', background: '#1a1a26', color: '#4b5563', border: '1px solid #2a2a3d', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>+ {s}</button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '8px' }}>SKILLS YOU WANT TO LEARN</label>
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                <input className="reg-input" style={{ flex: 1 }} placeholder="e.g. Machine Learning, Go..."
+                  value={skillInput.wanted} onChange={e => setSkillInput({ ...skillInput, wanted: e.target.value })}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill('wanted'))} />
+                <button onClick={() => addSkill('wanted')} style={{ padding: '10px 16px', borderRadius: '8px', border: 'none', background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)', color: 'white', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '0.85rem' }}>Add</button>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                {form.skillsWanted.map(s => (
+                  <span key={s} onClick={() => removeSkill('wanted', s)} style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '0.75rem', background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)', cursor: 'pointer' }}>{s} ×</span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '8px' }}>AVAILABILITY</label>
+              <select className="reg-input" value={form.availability} onChange={e => setForm({ ...form, availability: e.target.value })}>
+                {['full-time','part-time','weekends','evenings','flexible'].map(a => (
+                  <option key={a} value={a}>{a.charAt(0).toUpperCase() + a.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setStep(1)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: '1px solid #2a2a3d', background: 'transparent', color: '#6b7280', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', fontWeight: 600 }}>← Back</button>
+              <button onClick={() => setStep(3)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)', color: 'white', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', fontWeight: 700 }}>Continue →</button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Step 3 ── */}
+        {step === 3 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div>
+              <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '1.2rem', color: '#e2e8f0', marginBottom: '4px' }}>Social Links</h3>
+              <p style={{ color: '#4b5563', fontSize: '0.78rem' }}>Optional — helps others find and trust you</p>
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '6px' }}>GITHUB</label>
+              <input className="reg-input" placeholder="https://github.com/username" value={form.githubLink}
+                onChange={e => setForm({ ...form, githubLink: e.target.value })} />
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '6px' }}>LINKEDIN</label>
+              <input className="reg-input" placeholder="https://linkedin.com/in/username" value={form.linkedinLink}
+                onChange={e => setForm({ ...form, linkedinLink: e.target.value })} />
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#6b7280', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '6px' }}>LEETCODE</label>
+              <input className="reg-input" placeholder="https://leetcode.com/username" value={form.leetcodeLink}
+                onChange={e => setForm({ ...form, leetcodeLink: e.target.value })} />
+            </div>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
+              <button onClick={() => setStep(2)} style={{ flex: 1, padding: '12px', borderRadius: '10px', border: '1px solid #2a2a3d', background: 'transparent', color: '#6b7280', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', fontWeight: 600 }}>← Back</button>
+              <button onClick={handleSubmit} disabled={loading} style={{ flex: 2, padding: '12px', borderRadius: '10px', border: 'none', background: loading ? '#3d3d52' : 'linear-gradient(135deg,#6d28d9,#8b5cf6)', color: 'white', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'DM Sans, sans-serif', fontWeight: 700, boxShadow: loading ? 'none' : '0 0 20px rgba(109,40,217,0.3)' }}>
+                {loading ? 'Creating...' : '🚀 Create Account'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#4b5563', marginTop: '24px' }}>
+          Already have an account?{' '}
+          <Link to="/login" style={{ color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
         </p>
+        <Link to="/" style={{ display: 'block', textAlign: 'center', marginTop: '12px', color: '#3d3d52', fontSize: '0.8rem', textDecoration: 'none' }}>
+          ← Back to home
+        </Link>
       </div>
     </div>
   );
