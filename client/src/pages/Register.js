@@ -39,102 +39,120 @@ export default function Register() {
     }
   };
 
-  const inputStyle = {
-    width: '100%', boxSizing: 'border-box',
-    background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.12)',
-    borderRadius: 10, padding: '11px 14px',
-    color: '#ffffff', fontSize: 15,
-    outline: 'none', marginBottom: 16,
-    transition: 'border-color 0.2s',
+  const inp = {
+    display: 'block',
+    width: '100%',
+    boxSizing: 'border-box',
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: 9,
+    padding: '10px 13px',
+    color: '#fff',
+    fontSize: 15,
+    outline: 'none',
+    fontFamily: 'inherit',
+    marginBottom: 14,
   };
 
-  const labelStyle = {
-    display: 'block', color: '#a0a0b0',
-    fontSize: 13, marginBottom: 6, fontWeight: 500,
-  };
-
-  const textareaStyle = {
-    ...inputStyle,
-    resize: 'vertical', minHeight: 80,
+  const lbl = {
+    display: 'block',
+    color: '#888',
+    fontSize: 12,
+    marginBottom: 6,
+    fontWeight: 500,
+    letterSpacing: '0.3px',
+    textTransform: 'uppercase',
   };
 
   return (
     <div style={{
-      minHeight: '100vh',
+      position: 'fixed',
+      inset: 0,
       background: '#0a0a0f',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '24px 16px',
+      zIndex: 9999,
+      overflowY: 'auto',
+      padding: '20px',
     }}>
-      {/* Background orbs */}
+      {/* bg orbs */}
       <div style={{
-        position: 'fixed', top: '15%', right: '10%',
-        width: 350, height: 350,
-        background: 'radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 70%)',
+        position: 'fixed', top: '10%', right: '8%',
+        width: 400, height: 400,
+        background: 'radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%)',
+        borderRadius: '50%', pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'fixed', bottom: '15%', left: '5%',
+        width: 300, height: 300,
+        background: 'radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)',
         borderRadius: '50%', pointerEvents: 'none',
       }} />
 
-      <div style={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+      {/* Card */}
+      <div style={{
+        width: '460px',
+        maxWidth: 'calc(100vw - 40px)',
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        {/* Logo + title */}
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             width: 48, height: 48, borderRadius: 13,
             background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-            marginBottom: 14,
+            marginBottom: 13,
           }}>
-            <span style={{ fontSize: 22 }}>⇄</span>
+            <span style={{ fontSize: 20 }}>⇄</span>
           </div>
-          <h1 style={{
-            fontSize: 26, fontWeight: 700, color: '#ffffff',
-            margin: '0 0 5px', fontFamily: 'Syne, sans-serif',
-          }}>Join SkillSwap</h1>
-          <p style={{ color: '#a0a0b0', fontSize: 14, margin: 0 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#fff', margin: '0 0 5px', letterSpacing: '-0.3px' }}>
+            Join SkillSwap
+          </h1>
+          <p style={{ color: '#888', fontSize: 13, margin: 0 }}>
             Learn any skill without paying money
           </p>
         </div>
 
-        {/* Step indicators */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 24 }}>
+        {/* Step pills */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginBottom: 22 }}>
           {STEPS.map((s, i) => (
-            <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                opacity: i <= step ? 1 : 0.4,
-              }}>
+            <React.Fragment key={s}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div style={{
-                  width: 24, height: 24, borderRadius: '50%',
-                  background: i < step ? '#7c3aed' : i === step ? 'rgba(139,92,246,0.3)' : 'rgba(255,255,255,0.1)',
-                  border: i === step ? '2px solid #7c3aed' : '2px solid transparent',
+                  width: 22, height: 22, borderRadius: '50%',
+                  background: i < step ? '#7c3aed' : i === step ? 'rgba(124,58,237,0.25)' : 'rgba(255,255,255,0.08)',
+                  border: i === step ? '1.5px solid #7c3aed' : '1.5px solid transparent',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 12, color: '#fff', fontWeight: 600,
+                  fontSize: 11, color: '#fff', fontWeight: 600,
                 }}>
                   {i < step ? '✓' : i + 1}
                 </div>
-                <span style={{ fontSize: 13, color: i === step ? '#a78bfa' : '#666' }}>{s}</span>
+                <span style={{ fontSize: 12, color: i === step ? '#a78bfa' : '#555', fontWeight: i === step ? 500 : 400 }}>
+                  {s}
+                </span>
               </div>
               {i < STEPS.length - 1 && (
-                <div style={{ width: 24, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+                <div style={{ width: 20, height: 1, background: 'rgba(255,255,255,0.08)' }} />
               )}
-            </div>
+            </React.Fragment>
           ))}
         </div>
 
-        {/* Card */}
+        {/* Form box */}
         <div style={{
           background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 20,
-          padding: '28px 28px',
-          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.09)',
+          borderRadius: 18,
+          padding: '26px 24px',
         }}>
           {error && (
             <div style={{
-              background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)',
-              borderRadius: 10, padding: '11px 14px', marginBottom: 18,
-              color: '#f87171', fontSize: 14,
+              background: 'rgba(239,68,68,0.1)',
+              border: '1px solid rgba(239,68,68,0.25)',
+              borderRadius: 9, padding: '10px 13px',
+              marginBottom: 16, color: '#f87171', fontSize: 13,
             }}>
               {error}
             </div>
@@ -142,89 +160,55 @@ export default function Register() {
 
           {/* Step 0 — Account */}
           {step === 0 && (
-            <div>
-              <label style={labelStyle}>Full Name</label>
-              <input style={inputStyle} value={form.name} onChange={e => update('name', e.target.value)}
-                placeholder="Sanjay Kumar"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={labelStyle}>Email</label>
-              <input style={inputStyle} type="email" value={form.email} onChange={e => update('email', e.target.value)}
-                placeholder="you@example.com"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={labelStyle}>Password</label>
-              <input style={{ ...inputStyle, marginBottom: 0 }} type="password" value={form.password} onChange={e => update('password', e.target.value)}
-                placeholder="Min. 6 characters"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-            </div>
+            <>
+              <label style={lbl}>Full Name</label>
+              <input style={inp} value={form.name} onChange={e => update('name', e.target.value)} placeholder="Sanjay Kumar" />
+              <label style={lbl}>Email</label>
+              <input style={inp} type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="you@example.com" />
+              <label style={lbl}>Password</label>
+              <input style={{ ...inp, marginBottom: 0 }} type="password" value={form.password} onChange={e => update('password', e.target.value)} placeholder="Min. 6 characters" />
+            </>
           )}
 
           {/* Step 1 — Profile */}
           {step === 1 && (
-            <div>
-              <label style={labelStyle}>Bio</label>
-              <textarea style={textareaStyle} value={form.bio} onChange={e => update('bio', e.target.value)}
-                placeholder="Tell others about yourself..."
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={labelStyle}>Availability</label>
-              <select style={{ ...inputStyle, cursor: 'pointer' }} value={form.availability}
-                onChange={e => update('availability', e.target.value)}>
+            <>
+              <label style={lbl}>Bio</label>
+              <textarea style={{ ...inp, resize: 'vertical', minHeight: 75 }} value={form.bio} onChange={e => update('bio', e.target.value)} placeholder="Tell others about yourself..." />
+              <label style={lbl}>Availability</label>
+              <select style={{ ...inp, cursor: 'pointer' }} value={form.availability} onChange={e => update('availability', e.target.value)}>
                 <option value="weekdays">Weekdays</option>
                 <option value="weekends">Weekends</option>
                 <option value="evenings">Evenings</option>
                 <option value="flexible">Flexible</option>
               </select>
-
-              <label style={labelStyle}>GitHub (optional)</label>
-              <input style={inputStyle} value={form.githubLink} onChange={e => update('githubLink', e.target.value)}
-                placeholder="https://github.com/username"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={{ ...labelStyle, marginBottom: 6 }}>LinkedIn (optional)</label>
-              <input style={{ ...inputStyle, marginBottom: 0 }} value={form.linkedinLink} onChange={e => update('linkedinLink', e.target.value)}
-                placeholder="https://linkedin.com/in/username"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-            </div>
+              <label style={lbl}>GitHub (optional)</label>
+              <input style={inp} value={form.githubLink} onChange={e => update('githubLink', e.target.value)} placeholder="https://github.com/username" />
+              <label style={lbl}>LinkedIn (optional)</label>
+              <input style={{ ...inp, marginBottom: 0 }} value={form.linkedinLink} onChange={e => update('linkedinLink', e.target.value)} placeholder="https://linkedin.com/in/username" />
+            </>
           )}
 
           {/* Step 2 — Skills */}
           {step === 2 && (
-            <div>
-              <label style={labelStyle}>Skills I Can Teach</label>
-              <input style={inputStyle} value={form.skillsOffered} onChange={e => update('skillsOffered', e.target.value)}
-                placeholder="React, Node.js, Python (comma separated)"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <label style={labelStyle}>Skills I Want to Learn</label>
-              <input style={{ ...inputStyle, marginBottom: 0 }} value={form.skillsWanted} onChange={e => update('skillsWanted', e.target.value)}
-                placeholder="UI/UX, Machine Learning, Docker"
-                onFocus={e => e.target.style.borderColor = 'rgba(139,92,246,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'} />
-
-              <p style={{ color: '#666', fontSize: 13, marginTop: 12 }}>
-                Separate multiple skills with commas
-              </p>
-            </div>
+            <>
+              <label style={lbl}>Skills I Can Teach</label>
+              <input style={inp} value={form.skillsOffered} onChange={e => update('skillsOffered', e.target.value)} placeholder="React, Node.js, Python (comma separated)" />
+              <label style={lbl}>Skills I Want to Learn</label>
+              <input style={{ ...inp, marginBottom: 4 }} value={form.skillsWanted} onChange={e => update('skillsWanted', e.target.value)} placeholder="UI/UX, Machine Learning, Docker" />
+              <p style={{ color: '#555', fontSize: 12, margin: '0 0 4px' }}>Separate multiple skills with commas</p>
+            </>
           )}
 
-          {/* Navigation */}
-          <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
+          {/* Nav buttons */}
+          <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             {step > 0 && (
               <button onClick={() => setStep(s => s - 1)} style={{
                 flex: 1, padding: '11px',
                 background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: 10, color: '#a0a0b0',
-                fontSize: 15, cursor: 'pointer',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 9, color: '#aaa',
+                fontSize: 14, cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 Back
               </button>
@@ -233,34 +217,32 @@ export default function Register() {
               <button onClick={() => setStep(s => s + 1)} style={{
                 flex: 1, padding: '11px',
                 background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                border: 'none', borderRadius: 10,
-                color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer',
+                border: 'none', borderRadius: 9,
+                color: '#fff', fontSize: 14, fontWeight: 600,
+                cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 Continue →
               </button>
             ) : (
               <button onClick={handleSubmit} disabled={loading} style={{
                 flex: 1, padding: '11px',
-                background: loading ? 'rgba(139,92,246,0.5)' : 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                border: 'none', borderRadius: 10,
-                color: '#fff', fontSize: 15, fontWeight: 600,
-                cursor: loading ? 'not-allowed' : 'pointer',
+                background: loading ? '#4c1d95' : 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                border: 'none', borderRadius: 9,
+                color: '#fff', fontSize: 14, fontWeight: 600,
+                cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
               }}>
-                {loading ? 'Creating account...' : 'Start Learning Free'}
+                {loading ? 'Creating account...' : 'Start Learning Free →'}
               </button>
             )}
           </div>
         </div>
 
-        <p style={{ textAlign: 'center', marginTop: 18, color: '#555', fontSize: 14 }}>
+        <p style={{ textAlign: 'center', marginTop: 16, color: '#666', fontSize: 14, marginBottom: 0 }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ color: '#a78bfa', fontWeight: 500, textDecoration: 'none' }}>
-            Sign in
-          </Link>
+          <Link to="/login" style={{ color: '#a78bfa', fontWeight: 500, textDecoration: 'none' }}>Sign in</Link>
         </p>
-
-        <p style={{ textAlign: 'center', marginTop: 10, fontSize: 13 }}>
-          <Link to="/" style={{ color: '#555', textDecoration: 'none' }}>← Back to home</Link>
+        <p style={{ textAlign: 'center', marginTop: 8, fontSize: 13, marginBottom: 0 }}>
+          <Link to="/" style={{ color: '#444', textDecoration: 'none' }}>← Back to home</Link>
         </p>
       </div>
     </div>
