@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
@@ -35,6 +35,11 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { user } = useAuth();
   return user ? <Navigate to="/app/dashboard" /> : children;
+};
+
+const ProfileRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/app/profile/${id}`} replace />;
 };
 
 const LandingRoute = () => {
@@ -78,8 +83,8 @@ export default function App() {
           <Route path="/ai-matches" element={<ProtectedRoute><Navigate to="/app/ai-matches" /></ProtectedRoute>} />
           <Route path="/learning-path" element={<ProtectedRoute><Navigate to="/app/learning-path" /></ProtectedRoute>} />
           <Route path="/progress" element={<ProtectedRoute><Navigate to="/app/progress" /></ProtectedRoute>} />
-          <Route path="/profile/*" element={<ProtectedRoute><Navigate to="/app/profile" /></ProtectedRoute>} />
-          
+          <Route path="/profile" element={<ProtectedRoute><Navigate to="/app/profile" /></ProtectedRoute>} />
+          <Route path="/profile/:id" element={<ProtectedRoute><ProfileRedirect /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
