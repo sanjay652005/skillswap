@@ -42,10 +42,21 @@ export const AuthProvider = ({ children }) => {
     disconnectSocket();
   };
 
+  const loginWithToken = async (token) => {
+    localStorage.setItem('token', token);
+    try {
+      const res = await api.get('/auth/me');
+      setUser(res.data);
+      initSocket(token);
+    } catch (err) {
+      localStorage.removeItem('token');
+    }
+  };
+
   const updateUser = (updatedUser) => setUser(updatedUser);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, updateUser, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateUser, loginWithToken, loading }}>
       {children}
     </AuthContext.Provider>
   );

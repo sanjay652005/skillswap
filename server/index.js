@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
+const session = require('express-session');
 require('dotenv').config();
+
+const { passport, initPassport } = require('./utils/passport');
+initPassport(); // init after dotenv loaded
 
 const app = express();
 const server = http.createServer(app);
@@ -17,6 +21,13 @@ const io = new Server(server, {
 // Middleware
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000', credentials: true }));
 app.use(express.json({ limit: '10mb' }));
+app.use(session({
+  secret: process.env.JWT_SECRET || 'skillswap_secret',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // DB Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/skillswap')

@@ -17,6 +17,7 @@ import Messages from './pages/Messages';
 import LearningPath from './pages/LearningPath';
 import ProgressTracker from './pages/ProgressTracker';
 import Landing from './pages/Landing';
+import GoogleAuthSuccess from './pages/GoogleAuthSuccess';
 import './index.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -56,6 +57,7 @@ export default function App() {
           <Route path="/" element={<LandingRoute />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
           <Route path="/app" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
